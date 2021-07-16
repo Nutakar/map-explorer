@@ -1,0 +1,34 @@
+version: '3'
+services:
+  database:
+    image: "postgres" # use latest official postgres version
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=stage
+
+    volumes:
+      - ./data:/var/lib/postgresql/ # persist data even if container shuts down
+    ports:
+      - "5432:5432"
+
+  server:
+    # image: "map-proj"
+    environment: 
+      - PYTHONUNBUFFERED=1
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    # command: 
+    #   - python3 /server1.py
+    ports: 
+      - "8000:8000"
+    # volumes: 
+    #   - ./server1.py
+    # environment: 
+    depends_on:
+      - database
+
+
+
+
