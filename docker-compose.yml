@@ -12,22 +12,37 @@ services:
     ports:
       - "5432:5432"
 
-  server:
-    # image: "map-proj"
-    environment: 
-      - PYTHONUNBUFFERED=1
-    build: 
-      context: ./
-      dockerfile: Dockerfile
-    # command: 
-    #   - python3 /server1.py
+  # server:
+  #   # image: "map-proj"
+  #   environment: 
+  #     - PYTHONUNBUFFERED=1
+  #   build: 
+  #     context: ./
+  #     dockerfile: Dockerfile
+  #   # command: 
+  #   #   - python3 /server1.py
+  #   ports: 
+  #     - "8000:8000"
+  #   # volumes: 
+  #   #   - ./server1.py
+  #   # environment: 
+  #   depends_on:
+  #     - database
+  
+  flask_app:
+    container_name: flask_app
+    restart: always
+    build: ./flask_server
     ports: 
       - "8000:8000"
-    # volumes: 
-    #   - ./server1.py
-    # environment: 
-    depends_on:
-      - database
+    command: gunicorn -w 1 -b 0.0.0.0:8000 wsgi:server
+
+  # web:
+  #   image: nginx
+  #   volumes:
+  #     - ./nginx/project.conf:/etc/nginx/conf.d/default.conf
+
+
 
 
 
