@@ -2,7 +2,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import cgi
 import Map
-from Map import count_distance
+# from Map import count_distance
 # from Map import close_DBconnection
 
 print('pidor2')
@@ -46,7 +46,7 @@ class helloHandler(BaseHTTPRequestHandler):
 
             self.set_headers()
 
-            res = count_distance (distance, lon, lat)
+            res = Map.count_distance (distance, lon, lat)
 
             # res = Map.count_distance(distance, lon, lat)
             self.wfile.write(json.dumps(res).encode())

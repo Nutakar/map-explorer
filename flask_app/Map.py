@@ -60,7 +60,7 @@ def add_dots(dots, cursor = cursor, connection = connection):
 
     #Add records to DB
     # places = [
-    #     ('home', 61.69132, 50.2158),
+    #     ('home', 61.69132, 50.82074),
     #     ('school', 61.69095, 50.81769),
     #     ('dodo', 61.69319, 50.81534),
     #     ('maxi', 61.69864, 50.80271)
@@ -69,7 +69,7 @@ def add_dots(dots, cursor = cursor, connection = connection):
     places = dots
 
     records_list_template = ','.join(['%s'] * len(places))
-    insert_query = 'insert into dots (NAME, LON, LAT) values {}'.format(records_list_template)
+    insert_query = 'insert into dots (title, lon, lat) values {}'.format(records_list_template)
     cursor.execute(insert_query, places)
     connection.commit()
     # close_connection()
@@ -82,7 +82,7 @@ def count_distance(distance, lon, lat, cursor = cursor, connection = connection)
 
     result = {}
     # Main
-    cursor.execute("SELECT * FROM dots")
+    cursor.execute("SELECT * FROM \"dots\"")
     while True:
         row = cursor.fetchone()
         if row == None:

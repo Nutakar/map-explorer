@@ -2,9 +2,7 @@
 
 FROM python:3.8-alpine
 
-ADD server1.py .
-
-WORKDIR /home/anna/Documents/Python/map-explorer
+WORKDIR /map-explorer
 
 COPY requirements.txt .
 RUN \
@@ -15,4 +13,4 @@ RUN \
 
 COPY . .
 
-CMD [ "python3", "server1.py"]
+CMD [ "gunicorn", "-w", "1", "-b", "0.0.0.0:8000", "wsgi:server" ]
