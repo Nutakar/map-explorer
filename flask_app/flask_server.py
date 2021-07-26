@@ -3,21 +3,25 @@ import Map
 
 server = Flask(__name__)
 
-@server.route('/list_of_dots')
-def list_of_dots(result):
-    return 'List of dots: ', result
+# curl http://localhost:8000/get_dots -d '{"distance":1.5, "lon": 61.692573, "lat": 50.819956}' -H 'Content-Type: application/json'
+
 
 @server.route('/get_dots', methods = ['POST'])
+# curl http://localhost:8000/get_dots -d '{"distance":1.5, "lon": 61.692573, "lat": 50.819956}' -H 'Content-Type: application/json'
 def get_dots_by_distance():
     request_data = request.get_json()
+
     distance = request_data["distance"]
     lon = request_data["lon"]
     lat = request_data["lat"]
+
     result = Map.count_distance(distance, lon, lat)
-    # return jsonify(request_data)
+    print('POST request: /get_dots')
     return result
 
+
 @server.route('/add_dots', methods = ['POST'])
+
 def add_dots_to_db():
     request_data = request.get_json()
     dots = []
@@ -30,5 +34,12 @@ def add_dots_to_db():
         dots.append(dot)
 
     Map.add_dots(dots)
+    print('POST request: /add_dots')
     return 'Dots have been added'
 
+
+@server.route('/all_dots', methods = ['GET'])
+def show_all_dots():
+    result = Map.show_all_dots()
+    print('GET request: /all_dots')
+    return result

@@ -1,64 +1,21 @@
 import psycopg2
 import math
-import array as arr
-from psycopg2 import Error
 import config_DB
+import os
 
 
 params = config_DB.config()
 print ('555Connecting to the PostgreSQL DB')
+print(os.environ['POSTGRES_USER'])
 print(params)
 print ('pidor')
 
 connection = psycopg2.connect(**params)
 cursor = connection.cursor()
 
-
-
-
-def create_table(cursor = cursor, connection = connection):
-    create_table_query = '''CREATE TABLE dots
-        (NAME     TEXT     NOT NULL,
-        LON      REAL     NOT NULL,
-        LAT      REAL     NOT NULL); '''
-
-    cursor.execute(create_table_query)
-    connection.commit()
-    print("Table created")
-
-# connection = psycopg2.connect(user="postgres",
-#                             password="secret",
-#                             host="127.0.0.1",
-#                             port="5432",
-#                             database="stage")
-
-#         # Create a cursor to perform database operations
-# cursor = connection.cursor()
-
-# def close_connection():
-#     if (connection):
-#         cursor.close()
-#         connection.close()
-#         print("PostgreSQL connection is closed")
-
-
-
-
-#  # SQL query to create a new table
-
-# create_table_query = '''CREATE TABLE dots
-#      (NAME     TEXT     NOT NULL,
-#       LON      REAL     NOT NULL,
-#       LAT      REAL     NOT NULL); '''
-
-# cursor.execute(create_table_query)
-# connection.commit()
-# print("Table created")
-
+#Add records to DB
 def add_dots(dots, cursor = cursor, connection = connection):
-    # cursor = connection.cursor()
 
-    #Add records to DB
     # places = [
     #     ('home', 61.69132, 50.82074),
     #     ('school', 61.69095, 50.81769),
@@ -72,12 +29,10 @@ def add_dots(dots, cursor = cursor, connection = connection):
     insert_query = 'insert into dots (title, lon, lat) values {}'.format(records_list_template)
     cursor.execute(insert_query, places)
     connection.commit()
-    # close_connection()
 
 
-# My geo
 def count_distance(distance, lon, lat, cursor = cursor, connection = connection):
-    # cursor = connection.cursor()
+
     # GPS = [distance, 61.692573, 50.819956]
 
     result = {}
@@ -109,15 +64,11 @@ def count_distance(distance, lon, lat, cursor = cursor, connection = connection)
                     'lat': row[2]
                 }
 
-    # close_connection()
 
     return result
 
 
 def show_all_dots(cursor = cursor, connection = connection):
-
-    # cursor = connection.cursor()
-    # GPS = [distance, 61.692573, 50.819956]
 
     result = {}
     # Main
@@ -135,8 +86,6 @@ def show_all_dots(cursor = cursor, connection = connection):
                 'lat': row[2]
             }
 
-    # close_connection()
-
     return result
 
 
@@ -144,10 +93,3 @@ def close_DBconnection(cursor = cursor, connection = connection):
     cursor.close()
     connection.close()
     print("PostgreSQL connection is closed")
-
-
-
-# finally:
-#     if server1.except(KeyboardInterrupt):
-
-

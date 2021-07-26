@@ -2,8 +2,6 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import cgi
 import Map
-# from Map import count_distance
-# from Map import close_DBconnection
 
 print('pidor2')
 

@@ -1,20 +1,11 @@
-from configparser import ConfigParser
+import os
 
-
-
-def config(filename = 'DB.ini', section = 'postgresql'):
-    parser = ConfigParser()
-    parser.read(filename)
-
+def config():
     db = {}
-    if parser.has_section(section):
-        params = parser.items(section)
-        for param in params:
-            db[param[0]] = param[1]
-    else:
-        raise Exception('Section {0} not found in the {1} file'.format(section, filename))
-
-    return db 
-
-
-
+    db['user'] = os.environ['POSTGRES_USER']
+    db['password'] = os.environ['POSTGRES_PASSWORD']
+    db['host'] = os.environ['POSTGRES_HOST']
+    db['port'] = os.environ['POSTGRES_PORT']
+    db['database'] = os.environ['POSTGRES_DB']
+    return db
+    
