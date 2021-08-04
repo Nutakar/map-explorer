@@ -1,17 +1,25 @@
 import psycopg2
 import math
 import config_DB
-import os
+import time
 
 
 params = config_DB.config()
 print ('555Connecting to the PostgreSQL DB')
-print(os.environ['POSTGRES_USER'])
 print(params)
 print ('pidor')
 
 connection = psycopg2.connect(**params)
 cursor = connection.cursor()
+
+# Count function time
+def timer(f):
+    def tmp(*args, **kwargs):
+        t = time.time()
+        result = f(*args, **kwargs)
+        print ('Time of function: %f' % (time.time()-t)) 
+        return result
+    return tmp
 
 #Add records to DB
 def add_dots(dots, cursor = cursor, connection = connection):
@@ -30,13 +38,28 @@ def add_dots(dots, cursor = cursor, connection = connection):
     cursor.execute(insert_query, places)
     connection.commit()
 
-
-def count_distance(distance, lon, lat, cursor = cursor, connection = connection):
+@timer
+def count_distance(distance, lon, lat, cursor = cursor):
 
     # GPS = [distance, 61.692573, 50.819956]
+    lon = float(lon)
+    lat = float(lat)
+    lat_rad = lat*3.14/180
+
+    lon_start = lon - (distance/111.13486 + 0.5)
+    lon_finish = lon + (distance/111.13486 + 0.5)
+    lat_start = lat - (distance/(111.32138 * math.cos(lat_rad)) + 0.5)
+    lat_finish = lat + (distance/(111.32138 * math.cos(lat_rad)) + 0.5)
+
 
     result = {}
-    cursor.execute("SELECT * FROM \"dots\"")
+    cursor.execute("""
+        SELECT * FROM dots
+        WHERE lat >= %s
+        AND lat <= %s
+        AND lon >= %s
+        AND lon <= %s;
+    """, (lat_start, lat_finish, lon_start, lon_finish))
     while True:
         row = cursor.fetchone()
         if row == None:
@@ -61,12 +84,10 @@ def count_distance(distance, lon, lat, cursor = cursor, connection = connection)
                     'lon': row[1],
                     'lat': row[2]
                 }
-
-
     return result
 
 
-def show_all_dots(cursor = cursor, connection = connection):
+def show_all_dots(cursor = cursor):
 
     result = {}
     cursor.execute("SELECT * FROM dots")
@@ -82,11 +103,10 @@ def show_all_dots(cursor = cursor, connection = connection):
                 'lon': row[1],
                 'lat': row[2]
             }
-
     return result
 
 
-def count_number_of_dots(cursor = cursor, connection = connection):
+def count_number_of_dots(cursor = cursor):
     result = {}
     cursor.execute("SELECT COUNT(*) FROM dots")
     count_number = cursor.fetchone()
