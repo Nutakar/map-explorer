@@ -36,7 +36,6 @@ def count_distance(distance, lon, lat, cursor = cursor, connection = connection)
     # GPS = [distance, 61.692573, 50.819956]
 
     result = {}
-    # Main
     cursor.execute("SELECT * FROM \"dots\"")
     while True:
         row = cursor.fetchone()
@@ -56,7 +55,6 @@ def count_distance(distance, lon, lat, cursor = cursor, connection = connection)
         a = math.sin(dfi/2)*math.sin(dfi/2) + math.cos(fi1)*math.cos(fi2)*math.sin(dlam/2)*math.sin(dlam/2)
         c = 2*math.atan2(math.sqrt(a), math.sqrt(1-a))
         d = R*c
-        # print(d)
         if d<=distance:
 
             result[row[0]]= {
@@ -71,7 +69,6 @@ def count_distance(distance, lon, lat, cursor = cursor, connection = connection)
 def show_all_dots(cursor = cursor, connection = connection):
 
     result = {}
-    # Main
     cursor.execute("SELECT * FROM dots")
     while True:
         row = cursor.fetchone()
@@ -88,6 +85,13 @@ def show_all_dots(cursor = cursor, connection = connection):
 
     return result
 
+
+def count_number_of_dots(cursor = cursor, connection = connection):
+    result = {}
+    cursor.execute("SELECT COUNT(*) FROM dots")
+    count_number = cursor.fetchone()
+    result['number_of_dots'] = count_number[0]
+    return result
 
 def close_DBconnection(cursor = cursor, connection = connection):
     cursor.close()
